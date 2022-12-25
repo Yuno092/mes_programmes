@@ -1,6 +1,7 @@
 from tkinter import *
 import sys
 import os
+from tkinter.messagebox import *
 
 # taille du disque a la base a partir duquel on delimitera la taille des autres disques de plus en plus petit
 largeur_cnv = 900
@@ -25,6 +26,9 @@ disque_base = longueur_base - longueur_disque / 2  # taille du plus gros disque
 autres_disques = taille / 2 + separation
 
 ids = []
+
+# le programme ne peut se lancer qu'une seule fois
+is_started = FALSE
 
 # permet de bouger les disques de la tige "debut" vers la tige "arrivee" en passant par la tige intermédiaire "transition"
 
@@ -87,10 +91,15 @@ def draw_disk(nb_disque, disque_base, autres_disques, longueur_disque):
 
 
 def button_start_clicked():  # lancement du jeu
-    nb = int(nb_disk.get())
-    print("C'est parti", nb)
-    draw_disk(int(nb), disque_base, autres_disques, longueur_disque)
-    hanoi(list(range(nb)), 0, 2, 1, [nb, 0, 0], True)  # tiges 0,1,2
+    global is_started
+    if is_started == FALSE:
+        is_started = TRUE
+        nb = int(nb_disk.get())
+        print("C'est parti", nb)
+        draw_disk(int(nb), disque_base, autres_disques, longueur_disque)
+        hanoi(list(range(nb)), 0, 2, 1, [nb, 0, 0], True)  # tiges 0,1,2
+    else:
+        showwarning('Alerte', 'Faites un reset avant de refaire un start')
 
 
 def button_reset_clicked():
@@ -126,7 +135,7 @@ Button(fenetre, text="Fermer", command=fenetre.quit).pack(
 # ajout du champ permettant de choisir le nombre de disque
 var = StringVar(fenetre)
 var.set(3)  # valeur par défaut du nombre de disque
-nb_disk = Spinbox(fenetre, from_=1, to=12, textvariable=var)
+nb_disk = Spinbox(fenetre, from_=1, to=8, textvariable=var)
 nb_disk.pack()
 
 # Conception et emplacement de la base
